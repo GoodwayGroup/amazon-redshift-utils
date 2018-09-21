@@ -119,7 +119,7 @@ $('#config-form').parsley().on('field:validated', function() {
   <input type="text" class="form-control" name="configuration[db_user]" required="true" data-parsley-trigger="change" value="master">
 
   <label for="encryptedPassword">Base64 Encoded/Encrypted Password * :</label>
-  <input type="text" class="form-control" name="configuration[encrypted_password]" required="true" data-parsley-trigger="change" value="my encrypted password">
+  <input type="text" class="form-control" name="configuration[encrypted_pwd]" required="true" data-parsley-trigger="change" value="my encrypted password">
   
   <label for="authContext">KMS Authorisation Context JSON:</label>
   <input type="text" class="form-control" name="configuration[kms_auth_context]" data-parseley-required="false" data-parsley-trigger="change">
@@ -129,6 +129,12 @@ $('#config-form').parsley().on('field:validated', function() {
 
   <label for="sourceSchema">Source Schema * :</label>
   <input type="text" class="form-control" name="configuration[schema_name]" required="true" data-parsley-trigger="change" value="public">
+
+  <label for="systableUnloadLoc">System Tables S3 Unload Location :</label>
+  <input type="text" class="form-control" name="configuration[s3_unload_location]" required="false" data-parsley-trigger="change" value="">
+
+  <label for="systableUnloadRoleArn">System Tables Unload Role ARN :</label>
+  <input type="text" class="form-control" name="configuration[s3_unload_role_arn]" required="false" data-parsley-trigger="change" value="arn:aws:iam::<your account number>:role/<role name>">
 
   <hr/>
   <label>Table Analyze Options</label>

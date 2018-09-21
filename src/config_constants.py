@@ -4,6 +4,7 @@ ANALYZE = "Analyze"
 VACUUM = "Vacuum"
 MONITORING = "Monitoring"
 TABLE_PERSISTENCE = "SystemTablePersistence"
+WLM_SCHEDULER = "WlmScheduler"
 LOCAL_CONFIG = "config.json"
 
 DB_NAME = "db"
@@ -44,6 +45,9 @@ MIN_INTERLEAVED_SKEW = "min_interleaved_skew"
 MIN_INTERLEAVED_COUNT = "min_interleaved_count"
 KMS_AUTH_CONTEXT = "kms_auth_context"
 SYSTABLE_CLEANUP_AFTER_DAYS = "systable_cleanup_after_days"
+STATEMENT_TIMEOUT = "statement_timeout"
+S3_UNLOAD_LOCATION = "s3_unload_location"
+S3_UNLOAD_ROLE_ARN = "s3_unload_role_arn"
 
 config_aliases = {
     "db": ["db", "DatabaseName"],
@@ -115,6 +119,8 @@ def normalise_config(config):
     add_to_config(MIN_INTERLEAVED_COUNT)
     add_to_config(KMS_AUTH_CONTEXT)
     add_to_config(SYSTABLE_CLEANUP_AFTER_DAYS)
+    add_to_config(S3_UNLOAD_LOCATION)
+    add_to_config(S3_UNLOAD_ROLE_ARN)
 
     return config_out
 

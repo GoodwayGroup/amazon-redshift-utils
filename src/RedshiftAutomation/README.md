@@ -2,13 +2,12 @@
 
 This project includes code that is able to run several of the Amazon Redshift Utilities in AWS Lambda to automate the most common administrative tasks on a Redshift database. By using a Lambda function scheduled via a [CloudWatch Event](http://docs.aws.amazon.com/AmazonCloudWatch/latest/DeveloperGuide/WhatIsCloudWatchEvents.html), you can ensure that these valuable utilities run automatically and keep your Redshift cluster running well.
 
+
+Currently the [Column Encoding Utility](https://github.com/awslabs/amazon-redshift-utils/tree/master/src/ColumnEncodingUtility), [Analyze/Vacuum Utility](https://github.com/awslabs/amazon-redshift-utils/tree/master/src/AnalyzeVacuumUtility), [Redshift Advanced Monitoring](https://github.com/awslabs/amazon-redshift-monitoring), and [System Table Persistence](https://github.com/awslabs/amazon-redshift-utils/tree/master/src/SystemTablePersistence) are supported for automated invocation:
+
 ![Architecture](Architecture.png)
 
 This utility creates a Lambda function which imports other Redshift Utils modules, and then invokes them against a cluster. It runs within your VPC, and should be configured to connect via a Subnet which is either the same, or can route to the subnet where your Redshift cluster is running. It should also be configured with a Security Group which is trusted by your [Redshift Cluster Security Configuration](http://docs.aws.amazon.com/redshift/latest/mgmt/working-with-security-groups.html).
-
-Currently the [Column Encoding Utility](src/ColumnEncodingUtility), [Analyze/Vacuum Utility](src/AnalyzeVacuumUtility), [Redshift Advanced Monitoring](https://github.com/awslabs/amazon-redshift-monitoring), and [System Table Persistence](src/SystemTablePersistence) are supported for automated invocation:
-
-![what it does](WhatItDoes.png)
 
 ## Setup Pre-Tasks
 
@@ -57,7 +56,7 @@ The required configuration items are placed into the ```configuration``` part of
   "output_file":"/tmp/analyze-schema-compression.sql",
   "debug": "Should the utilities run in debug mode? (boolean - true | false | default false)",
   "do_execute": "Should changes be made automatically, or just for reporting purposes (boolean - true |  false | default true)",
-  "analyze_col_width": "Analyze columns wider than this value (int)",
+  "analyze_col_width": "Analyze varchar columns wider that 255 characters and reduce size based on determined data length (boolean - default false)",
   "threads": "How many threads should the column encoding utility use (can run in parallel - default 1 for Lambda)",
   "ssl":"Should you connect to the cluster with SSL? (boolean true | false | default true)",
   "do_vacuum": "Should the Analyze Vacuum utility run Vacuum? (boolean true | false | default true)",
