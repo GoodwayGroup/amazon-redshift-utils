@@ -41,14 +41,7 @@ def run():
     root = "/".join(os.path.realpath(__file__).split("/")[0:-1])
     package = {
         "name": "AnalyzeVacuumUtility",
-        "python_version": 3.6,
-        "envs": [
-            {
-                "s3_path": "s3://gw-deploy/secure/data-warehouse/aws.env",
-                "local_path": "/".join([root, "env", "aws.env", ])
-            }
-        ]
-
+        "python_version": 3.7
     }
 
     commands = [
