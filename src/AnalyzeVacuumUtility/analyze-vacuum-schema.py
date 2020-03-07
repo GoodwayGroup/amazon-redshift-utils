@@ -38,7 +38,8 @@ Srinikri Amazon Web Services (2015)
 '''
 import os
 import sys
-from dotenv import load_dotenv
+import ast
+
 
 # add the lib directory to the sys path
 try:
@@ -50,6 +51,7 @@ except:
 import getopt
 import analyze_vacuum
 import config_constants
+import boto3
 
 __version__ = ".9.1.5"
 
@@ -103,15 +105,24 @@ def usage(with_message=None):
 
     sys.exit(INVALID_ARGS)
 
+def _get_secret(secret_name):
+
+    region_name = "us-east-1"
+    # Create a Secrets Manager client
+    session = boto3.session.Session()
+    client = session.client(service_name="secretsmanager", region_name=region_name)
+    get_secret_value_response = client.get_secret_value(SecretId=secret_name)
+    secret = get_secret_value_response["SecretString"]
+
+    return secret
 
 def main(argv):
     supported_args = """db= db-user= db-pwd= db-host= db-port= schema-name= table-name= blacklisted-tables= suppress-cloudwatch= require-ssl= debug= output-file= slot-count= ignore-errors= query_group= analyze-flag= vacuum-flag= vacuum-parameter= min-unsorted-pct= max-unsorted-pct= stats-off-pct= predicate-cols= max-table-size-mb= min-interleaved-skew= min-interleaved-cnt="""
 
-    """ Load connection environment from bi-etl-python/env/aws.env file
+    """ Load connection environment from secret manager
     """
-    env_dir = "/".join([os.environ['BI_ETL_HOME'], 'env/aws.env', ])
+    redshift_secrets_dict = ast.literal_eval(_get_secret('bi/redshift_prod'))
 
-    load_dotenv(env_dir)
     # extract the command line arguments
     try:
         optlist, remaining = getopt.getopt(argv[1:], "", supported_args.split())
@@ -119,11 +130,11 @@ def main(argv):
         print(str(err))
         usage()
 
-    args = {config_constants.DB_NAME: os.environ.get('REDSHIFT_DB'),
-            config_constants.DB_USER: os.environ.get('REDSHIFT_USER', None),
-            config_constants.DB_PASSWORD: os.environ.get('REDSHIFT_PASSWORD', None),
-            config_constants.DB_HOST: os.environ.get('REDSHIFT_CLUSTER_PROD', None),
-            config_constants.DB_PORT: os.environ.get('REDSHIFT_PORT', 5439)}
+    args = {config_constants.DB_NAME: redshift_secrets_dict["redshift_db"],
+            config_constants.DB_USER: redshift_secrets_dict["redshift_user"],
+            config_constants.DB_PASSWORD: redshift_secrets_dict["redshift_password"],
+            config_constants.DB_HOST: redshift_secrets_dict["redshift_endpoint"],
+            config_constants.DB_PORT: redshift_secrets_dict["redshift_port"]}
 
     # parse command line arguments
     for arg, value in optlist:
@@ -245,6 +256,7 @@ def main(argv):
         sys.exit(result)
     else:
         sys.exit(0)
+
 
 
 if __name__ == "__main__":
